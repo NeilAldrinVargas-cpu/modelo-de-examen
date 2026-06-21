@@ -1,0 +1,63 @@
+#include <iostream>
+
+using namespace std;
+
+// 1. FUNCIÓN PARA LEER UN VECTOR (Reutilizable para ambos vectores)
+// Agregamos un texto personalizado para saber qué vector estamos llenando
+void ingresarDatos(double vector[], int &tamano, string nombreVector) {
+    cout << "¿Cuántos números tendrá el " << nombreVector << "? ";
+    cin >> tamano;
+
+    cout << "Introduce los " << tamano << " números:" << endl;
+    for (int i = 0; i < tamano; i++) {
+        cout << "Elemento " << (i + 1) << ": ";
+        cin >> vector[i];
+    }
+    cout << endl;
+}
+
+// 2. FUNCIÓN PARA COMBINAR LOS DOS VECTORES
+void concatenarVectores(double vec1[], int n, double vec2[], int x, double vecResultado[]) {
+    // Paso A: Copiar el primer vector
+    for (int i = 0; i < n; i++) {
+        vecResultado[i] = vec1[i];
+    }
+
+    // Paso B: Copiar el segundo vector justo a continuación
+    for (int i = 0; i < x; i++) {
+        // Al índice del resultado le sumamos 'n' para empezar a escribir 
+        // después de los elementos del primer vector
+        vecResultado[n + i] = vec2[i];
+    }
+}
+
+// 3. FUNCIÓN PARA MOSTRAR EL VECTOR FINAL COMBINADO
+void mostrarResultado(double vecResultado[], int tamanoTotal) {
+    cout << "--- VECTOR COMBINADO RESULTANTE ---" << endl;
+    for (int i = 0; i < tamanoTotal; i++) {
+        cout << "[" << vecResultado[i] << "] ";
+    }
+    cout << endl;
+}
+
+// 4. FUNCIÓN PRINCIPAL
+int main() {
+    // Declaramos tamaños y vectores independientes
+    int n = 0, x = 0;
+    double primerVector[100];
+    double segundoVector[100];
+    double vectorCombinado[200]; // Tiene espacio suficiente para ambos (100 + 100)
+
+    // El int main solo manda a llamar las funciones en orden:
+    ingresarDatos(primerVector, n, "Primer Vector");
+    ingresarDatos(segundoVector, x, "Segundo Vector");
+
+    // Combinamos ambos vectores en 'vectorCombinado'
+    concatenarVectores(primerVector, n, segundoVector, x, vectorCombinado);
+
+    // Calculamos el tamaño total final (n + x) y lo mostramos
+    int tamanoFinal = n + x;
+    mostrarResultado(vectorCombinado, tamanoFinal);
+
+    return 0;
+}
