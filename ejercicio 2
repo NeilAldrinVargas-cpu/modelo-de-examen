@@ -1,0 +1,86 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// 1. FUNCIÓN AUXILIAR: Valida si una pregunta cumple con todos los requisitos
+bool esPreguntaValida(string texto) {
+    // Regala 1: Validar que no esté vacía
+    if (texto.empty()) {
+        cout << "[Error] La pregunta no puede estar vacía." << endl;
+        return false;
+    }
+
+    // Regla 2: Validar que no tenga espacios al inicio o al final
+    if (texto.front() == ' ' || texto.back() == ' ') {
+        cout << "[Error] La pregunta no debe tener espacios al principio ni al final." << endl;
+        return false;
+    }
+
+    // Regla 3: Validar que no contenga caracteres especiales raros
+    // Permitiremos letras, números, espacios, y los signos '¿' y '?'
+    for (int i = 0; i < texto.length(); i++) {
+        char c = texto[i];
+        
+        // Comprobamos si el carácter es una letra, número o espacio válido
+        bool esLetraONumero = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
+        bool esEspacio = (c == ' ');
+        bool esSignoPregunta = (c == '?' || c == '\xBF'); // '\xBF' es el código para '¿' en muchos sistemas
+
+        // Si NO cumple con ninguna de las anteriores, es un carácter especial prohibido
+        if (!esLetraONumero && !esEspacio && !esSignoPregunta) {
+            cout << "[Error] La pregunta contiene un carácter especial no permitido: '" << c << "'" << endl;
+            return false;
+        }
+    }
+
+    return true; // Si superó todas las pruebas, la pregunta es totalmente válida
+}
+
+// 2. FUNCIÓN PARA INGRESAR Y VALIDAR LOS DATOS
+void ingresarPreguntas(string vector[], int &n) {
+    cout << "¿Cuántas preguntas deseas registrar? ";
+    cin >> n;
+    cin.ignore(); // Limpiamos el buffer del teclado
+
+    for (int i = 0; i < n; i++) {
+        string entrada;
+        bool valida = false;
+
+        // Un bucle "while" que se repite hasta que el usuario escriba una pregunta correcta
+        while (!valida) {
+            cout << "Pregunta " << (i + 1) << ": ";
+            getline(cin, entrada);
+
+            // Llamamos a nuestra función auxiliar para revisar el texto
+            if (esPreguntaValida(entrada)) {
+                vector[i] = entrada; // Si es válida, la guardamos oficialmente
+                valida = true;       // Rompe el bucle para pasar a la siguiente pregunta
+            } else {
+                cout << "Por favor, intenta ingresar la pregunta de nuevo.\n" << endl;
+            }
+        }
+    }
+}
+
+// 3. FUNCIÓN PARA MOSTRAR LAS PREGUNTAS REGISTRADAS
+void mostrarPreguntas(string vector[], int n) {
+    cout << "\n--- REPORTE DE PREGUNTAS REGISTRADAS ---" << endl;
+    for (int i = 0; i < n; i++) {
+        // Se muestran de forma numerada (correlativa) y en el orden en que se ingresaron
+        cout << (i + 1) << ". " << vector[i] << endl;
+    }
+}
+
+// 4. FUNCIÓN PRINCIPAL
+int main() {
+    int n = 0;
+    string listaPreguntas[100]; // Vector con capacidad de hasta 100 preguntas
+
+    // El int main interactúa exclusivamente llamando a los módulos en orden cronológico:
+    ingresarPreguntas(listaPreguntas, n);
+    
+    mostrarPreguntas(listaPreguntas, n);
+
+    return 0;
+}
