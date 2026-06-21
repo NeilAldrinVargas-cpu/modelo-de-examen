@@ -1,0 +1,62 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// 1. FUNCIÓN PARA PEDIR LAS DESCRIPCIONES DE LOS PRODUCTOS
+void ingresarDescripciones(string descripciones[], int &n) {
+    cout << "¿Cuántos productos deseas registrar? ";
+    cin >> n;
+    cin.ignore(); // Limpia el buffer para que nos deje usar getline() sin saltarse líneas
+
+    cout << "\nIntroduce las descripciones de los productos:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "Producto " << (i + 1) << ": ";
+        // Usamos getline para poder leer textos largos con espacios
+        getline(cin, descripciones[i]); 
+    }
+}
+
+// 2. FUNCIÓN PARA BUSCAR Y REEMPLAZAR TEXTO EN LAS DESCRIPCIONES
+void estandarizarDescripciones(string descripciones[], int n) {
+    string buscar = "TEMP123";      // Palabra incorrecta o código temporal a buscar
+    string correcto = "Original";    // Texto válido estándar de la empresa
+
+    for (int i = 0; i < n; i++) {
+        // Buscamos la posición donde inicia la palabra incorrecta dentro del string actual
+        size_t posicion = descripciones[i].find(buscar);
+
+        // El bucle "while" se asegura de reemplazar TODAS las apariciones de esa palabra
+        while (posicion != string::npos) {
+            // .replace(posición_inicio, cuántas_letras_borrar, texto_nuevo)
+            descripciones[i].replace(posicion, buscar.length(), correcto);
+            
+            // Buscamos si existe otra aparición más adelante en el mismo texto
+            posicion = descripciones[i].find(buscar, posicion + correcto.length());
+        }
+    }
+}
+
+// 3. FUNCIÓN PARA MOSTRAR LOS PRODUCTOS ESTANDARIZADOS CON SU CORRELATIVO
+void mostrarResultado(string descripciones[], int n) {
+    cout << "\n--- LISTA DE PRODUCTOS ESTANDARIZADOS ---" << endl;
+    for (int i = 0; i < n; i++) {
+        // Agregamos el número correlativo (i + 1) antes de la descripción
+        cout << "[" << (i + 1) << "] " << descripciones[i] << endl;
+    }
+}
+
+// 4. FUNCIÓN PRINCIPAL
+int main() {
+    int n = 0;
+    string listaProductos[100]; // Vector para almacenar hasta 100 descripciones de tipo string
+
+    // El int main sigue siendo un director de orquesta limpio:
+    ingresarDescripciones(listaProductos, n);
+    
+    estandarizarDescripciones(listaProductos, n);
+    
+    mostrarResultado(listaProductos, n);
+
+    return 0;
+}
